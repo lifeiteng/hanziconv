@@ -70,10 +70,10 @@ class Main(object):
         func = HanziConv.toTraditional
         if simplified:
             func = HanziConv.toSimplified
-        converted = ''
+        converted = []
         for line in data:
-            converted += func(line)
-        self.write(converted, outfile)
+            converted.append(func(line))
+        self.write(''.join(converted), outfile)
 
     def read(self, filename):
         """Read content from filename, and stdin if filename = '-'
@@ -118,7 +118,7 @@ class Main(object):
         in `filename` as `encoding`
 
         :params filename: name of input file ('-' for stdin)
-        :returns :        data in 
+        :returns :        data in
         """
         encoding = 'utf-8'
         data = ''
