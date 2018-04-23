@@ -35,8 +35,9 @@ from .charmap import simplified_charmap, traditional_charmap
 class HanziConv(object):
     """This class supports hanzi (漢字) convention between simplified and
     traditional format"""
-    __traditional_charmap = traditional_charmap
-    __simplified_charmap = simplified_charmap
+    __traditional_to_simplified_charmap = dict([(traditional_charmap[i], simplified_charmap[i]) for i in range(len(traditional_charmap))])
+    __simplified_to_traditional_charmap = dict([(simplified_charmap[i], traditional_charmap[i]) for i in range(len(traditional_charmap))])
+
 
     @classmethod
     def __convert(cls, text, toTraditional=True):
@@ -51,19 +52,8 @@ class HanziConv(object):
         if isinstance(text, bytes):
             text = text.decode('utf-8')
 
-        fromMap = cls.__simplified_charmap
-        toMap = cls.__traditional_charmap
-        if not toTraditional:
-            fromMap = cls.__traditional_charmap
-            toMap = cls.__simplified_charmap
-
-        final = []
-        for c in text:
-            index = fromMap.find(c)
-            if index != -1:
-                final.append(toMap[index])
-            else:
-                final.append(c)
+        charMap = cls.__simplified_to_traditional_charmap if toTraditional else cls.__traditional_to_simplified_charmap
+        final = [charMap.get(c, c) for c in text]
         return ''.join(final)
 
     @classmethod
